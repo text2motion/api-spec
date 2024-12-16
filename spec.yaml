@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Text2Motion API
-  version: 0.1.0
+  version: 0.1.10
 servers:
   - url: https://api.text2motion.ai
     description: Production environment
@@ -54,6 +54,87 @@ paths:
         Parameters:
             request_body (GenerateRequestBody): The request body.
       operationId: feedback_api_feedback_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackRequestBody"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "404":
+          description: Not found
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        - APIKeyHeader: []
+  /api/labs/0.1.0/generate:
+    post:
+      tags:
+        - generate
+      summary: Generate
+      description: >-
+        Request text to animation generation using model version 0.1.0.
+
+        ---
+
+        **Note: This API is experimental and may be discontinued or broken at any time.**
+
+
+        Parameters:
+            request_body (GenerateRequestBody): The request body.
+
+        Returns:
+            GenerateResponseBody: The generated animation response.
+      operationId: generate_api_labs_0_1_0_generate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateRequestBody"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateResponseBody"
+        "404":
+          description: Not found
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        - APIKeyHeader: []
+  /api/labs/0.1.0/feedback:
+    post:
+      tags:
+        - feedback
+      summary: Feedback
+      description: >-
+        Provide feedback to a generate animation request for model version
+        0.1.0.
+
+        ---
+
+        **Note: This API is experimental and may be discontinued or broken at any time.**
+
+
+        Parameters:
+            request_body (GenerateRequestBody): The request body.
+      operationId: feedback_api_labs_0_1_0_feedback_post
       requestBody:
         content:
           application/json:
