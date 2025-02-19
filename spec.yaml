@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Text2Motion API
-  version: 0.1.10
+  version: 0.1.12
 servers:
 - url: https://api.text2motion.ai
   description: Production environment
