@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Text2Motion API
-  version: 0.1.10
+  version: 0.1.15
 servers:
   - url: https://api.text2motion.ai
     description: Production environment
@@ -16,33 +16,56 @@ paths:
         ---
         Parameters:
             request_body (GenerateRequestBody): The request body.
-
+            settings (Settings): The animation generation settings.
         Returns:
             GenerateResponseBody: The generated animation response.
       operationId: generate_api_generate_post
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Authorization
+            nullable: true
+        - name: developer-email
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Developer-Email
+            nullable: true
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GenerateRequestBody"
-        required: true
+              $ref: '#/components/schemas/GenerateRequestBody'
       responses:
-        "200":
-          description: Successful Response
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenerateResponseBody"
-        "404":
+                $ref: '#/components/schemas/GenerateResponseBody'
+        '404':
           description: Not found
-        "422":
+        '401':
+          description: Invalid authorization
+        '500':
+          description: Internal server error
+        '422':
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-      security:
-        - APIKeyHeader: []
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/feedback:
     post:
       tags:
@@ -54,109 +77,278 @@ paths:
         Parameters:
             request_body (GenerateRequestBody): The request body.
       operationId: feedback_api_feedback_post
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Authorization
+            nullable: true
+        - name: developer-email
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Developer-Email
+            nullable: true
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FeedbackRequestBody"
-        required: true
+              $ref: '#/components/schemas/FeedbackRequestBody'
       responses:
-        "200":
-          description: Successful Response
+        '200':
+          description: OK
           content:
             application/json:
               schema: {}
-        "404":
+        '404':
           description: Not found
-        "422":
+        '401':
+          description: Invalid authorization
+        '500':
+          description: Internal server error
+        '422':
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/userinfo:
+    get:
+      tags:
+        - userinfo
+      summary: Get Userinfo
+      description: |-
+        Get user information for the given email.
+        ---
+        Parameters:
+            email: The email of the user.
+        Returns:
+            User information for the given email.
+      operationId: get_userinfo_api_userinfo_get
       security:
         - APIKeyHeader: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Authorization
+            nullable: true
+        - name: developer-email
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Developer-Email
+            nullable: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserInfoBody'
+        '404':
+          description: Not found
+        '401':
+          description: Invalid authorization
+        '500':
+          description: Internal server error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+        - userinfo
+      summary: Put Userinfo
+      description: |-
+        Update user information for the given email.
+        ---
+        Parameters:
+            body: The user information to update.
+            email: The email of the user.
+      operationId: put_userinfo_api_userinfo_post
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Authorization
+            nullable: true
+        - name: developer-email
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Developer-Email
+            nullable: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUserInfoBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+        '401':
+          description: Invalid authorization
+        '500':
+          description: Internal server error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/labs/0.1.0/generate:
     post:
       tags:
         - generate
       summary: Generate
-      description: >-
-        Request text to animation generation using model version 0.1.0.
-
+      description: |-
+        Request text to animation generation.
         ---
-
-        **Note: This API is experimental and may be discontinued or broken at any time.**
-
-
         Parameters:
             request_body (GenerateRequestBody): The request body.
 
         Returns:
             GenerateResponseBody: The generated animation response.
       operationId: generate_api_labs_0_1_0_generate_post
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Authorization
+            nullable: true
+        - name: developer-email
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Developer-Email
+            nullable: true
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GenerateRequestBody"
-        required: true
+              $ref: '#/components/schemas/GenerateRequestBody'
       responses:
-        "200":
-          description: Successful Response
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenerateResponseBody"
-        "404":
+                $ref: '#/components/schemas/GenerateResponseBody'
+        '404':
           description: Not found
-        "422":
+        '401':
+          description: Invalid authorization
+        '500':
+          description: Internal server error
+        '422':
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-      security:
-        - APIKeyHeader: []
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/labs/0.1.0/feedback:
     post:
       tags:
         - feedback
       summary: Feedback
-      description: >-
-        Provide feedback to a generate animation request for model version
-        0.1.0.
-
+      description: |-
+        Provide feedback to a generate animation request for model version 0.1.0.
         ---
-
         **Note: This API is experimental and may be discontinued or broken at any time.**
-
 
         Parameters:
             request_body (GenerateRequestBody): The request body.
       operationId: feedback_api_labs_0_1_0_feedback_post
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Authorization
+            nullable: true
+        - name: developer-email
+          in: header
+          required: false
+          schema:
+            anyOf:
+              - type: string
+            exclude_from_schema: true
+            title: Developer-Email
+            nullable: true
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FeedbackRequestBody"
-        required: true
+              $ref: '#/components/schemas/FeedbackRequestBody'
       responses:
-        "200":
-          description: Successful Response
+        '200':
+          description: OK
           content:
             application/json:
               schema: {}
-        "404":
+        '404':
           description: Not found
-        "422":
+        '401':
+          description: Invalid authorization
+        '500':
+          description: Internal server error
+        '422':
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-      security:
-        - APIKeyHeader: []
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
     Bone:
@@ -196,7 +388,7 @@ components:
         children:
           anyOf:
             - items:
-                $ref: "#/components/schemas/Bone"
+                $ref: '#/components/schemas/Bone'
               type: array
               maxItems: 50
           title: Children
@@ -212,13 +404,13 @@ components:
       properties:
         request_id:
           type: string
-          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+          pattern: ^[a-zA-Z0-9]{20}$
           title: Request Id
           description: The request id of the generate request to provide feedback for.
         rating:
           type: integer
-          maximum: 10
-          minimum: 1
+          maximum: 10.0
+          minimum: 1.0
           title: Rating
           description: The rating to give for the given request id, [1, 10].
       type: object
@@ -237,16 +429,15 @@ components:
           description: The text prompt to generate animation.
           example: Run forward
         target_skeleton:
-          $ref: "#/components/schemas/Skeleton"
+          $ref: '#/components/schemas/Skeleton'
           description: The target skeleton for the animation.
         seconds:
           anyOf:
             - type: integer
-              maximum: 30
-              minimum: 0
+              maximum: 30.0
+              minimum: 0.0
           title: Seconds
-          description: The duration of the animation in seconds, 0 to estimate
-            automatically.
+          description: The duration of the animation in seconds, 0 to estimate automatically.
           default: 0
           example: 5
           nullable: true
@@ -275,15 +466,146 @@ components:
       type: object
       title: GenerateResponseBody
       description: Response schema for Generate API.
+    GetUserInfoBody:
+      properties:
+        first_name:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 1
+          title: First Name
+          description: Given name (first name) of the user
+          example: John
+          nullable: true
+        last_name:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 1
+          title: Last Name
+          description: Surname (last name) of the user
+          example: Doe
+          nullable: true
+        nickname:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 1
+          title: Nickname
+          description: Nickname of the user
+          example: Johnny
+          nullable: true
+        company:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 5
+          title: Company
+          description: Company name of the user
+          example: Acme Inc.
+          nullable: true
+        role:
+          anyOf:
+            - $ref: '#/components/schemas/UserRole'
+          description: Role of the user
+          example: Animator
+          nullable: true
+        reason_for_use:
+          anyOf:
+            - $ref: '#/components/schemas/ReasonForUse'
+          description: Reason for using the service
+          example: Commercial projects
+          nullable: true
+      type: object
+      required:
+        - first_name
+        - last_name
+        - nickname
+        - company
+        - role
+        - reason_for_use
+      title: GetUserInfoBody
     HTTPValidationError:
       properties:
         detail:
           items:
-            $ref: "#/components/schemas/ValidationError"
+            $ref: '#/components/schemas/ValidationError'
           type: array
           title: Detail
       type: object
       title: HTTPValidationError
+    ReasonForUse:
+      type: string
+      enum:
+        - Unknown
+        - Personal projects
+        - Commercial projects
+        - Research
+        - Education
+        - Evaluation
+        - Investment
+        - Other
+      title: ReasonForUse
+      description: Reason for use enumeration.
+    SetUserInfoBody:
+      properties:
+        first_name:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 1
+          title: First Name
+          description: Given name (first name) of the user
+          example: John
+          nullable: true
+        last_name:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 1
+          title: Last Name
+          description: Surname (last name) of the user
+          example: Doe
+          nullable: true
+        nickname:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 1
+          title: Nickname
+          description: Nickname of the user
+          example: Johnny
+          nullable: true
+        company:
+          anyOf:
+            - type: string
+              maxLength: 50
+              minLength: 5
+          title: Company
+          description: Company name of the user
+          example: Acme Inc.
+          nullable: true
+        role:
+          anyOf:
+            - $ref: '#/components/schemas/UserRole'
+          description: Role of the user
+          example: Animator
+          nullable: true
+        reason_for_use:
+          anyOf:
+            - $ref: '#/components/schemas/ReasonForUse'
+          description: Reason for using the service
+          example: Commercial projects
+          nullable: true
+      type: object
+      required:
+        - first_name
+        - last_name
+        - nickname
+        - company
+        - role
+        - reason_for_use
+      title: SetUserInfoBody
     Skeleton:
       properties:
         world_matrix:
@@ -301,10 +623,10 @@ components:
             - 0
             - 0
             - 99.9999999999999
-            - 0.0000043711388286738005
+            - 4.3711388286738005e-06
             - 0
             - 0
-            - -0.0000043711388286738005
+            - -4.3711388286738005e-06
             - 99.9999999999999
             - 0
             - 0
@@ -312,7 +634,7 @@ components:
             - 0
             - 1
         root:
-          $ref: "#/components/schemas/Bone"
+          $ref: '#/components/schemas/Bone'
           description: Root bone of the skeleton.
       type: object
       required:
@@ -380,7 +702,7 @@ components:
                             - 0
                             - 0
                             - 0.162368446588516
-                            - 1.13957474567883e-8
+                            - 1.13957474567883e-08
                             - 1
                           name: mixamorigNeck
                         - children:
@@ -398,10 +720,10 @@ components:
                                                         - 0
                                                         - 0
                                                         - 0.9999999999999999
-                                                        - 1.070989164020376e-8
+                                                        - 1.070989164020376e-08
                                                         - 0
                                                         - 0
-                                                        - -1.070989164020376e-8
+                                                        - -1.070989164020376e-08
                                                         - 0.9999999999999999
                                                         - 0
                                                         - 0.00142527290154248
@@ -448,7 +770,7 @@ components:
                                           matrix:
                                             - 0.7956960500046291
                                             - 0.6056961367107477
-                                            - 1.0637577846361879e-8
+                                            - 1.0637577846361879e-08
                                             - 0
                                             - -0.5433589031315195
                                             - 0.713804331764976
@@ -474,13 +796,13 @@ components:
                                                         - 0
                                                         - -3.9898639937042087e-17
                                                         - 1
-                                                        - -1.335405452884686e-9
+                                                        - -1.335405452884686e-09
                                                         - 0
                                                         - -1.561251131043169e-17
-                                                        - 1.335405452884686e-9
+                                                        - 1.335405452884686e-09
                                                         - 1
                                                         - 0
-                                                        - -0.00000977829404291697
+                                                        - -9.77829404291697e-06
                                                         - 0.0401996076107025
                                                         - 2.02703909213398e-10
                                                         - 1
@@ -498,7 +820,7 @@ components:
                                                     - -0.048600909208732945
                                                     - 0.9988182776112791
                                                     - 0
-                                                    - 0.00000408908363169758
+                                                    - 4.08908363169758e-06
                                                     - 0.0439524687826633
                                                     - -6.983810751926e-11
                                                     - 1
@@ -516,7 +838,7 @@ components:
                                                 - -0.011960826206980578
                                                 - 0.999928466760018
                                                 - 0
-                                                - 0.00000568914174436941
+                                                - 5.68914174436941e-06
                                                 - 0.0477963909506798
                                                 - 1.30964388639354e-11
                                                 - 1
@@ -524,13 +846,13 @@ components:
                                           matrix:
                                             - 0.9984008195099559
                                             - 0.05653144039541397
-                                            - -1.4833731978343293e-9
+                                            - -1.4833731978343293e-09
                                             - 0
                                             - -0.05653137827991149
                                             - 0.9983997225279553
                                             - 0.001482389055202848
                                             - 0
-                                            - 0.00008380306555130005
+                                            - 8.380306555130005e-05
                                             - -0.0014800183638021514
                                             - 0.9999989012607928
                                             - 0
@@ -550,13 +872,13 @@ components:
                                                         - 0
                                                         - -1.1449174876964953e-16
                                                         - 0.9999999999999997
-                                                        - 2.65509445540602e-8
+                                                        - 2.65509445540602e-08
                                                         - 0
                                                         - 4.857225884728265e-17
-                                                        - -2.65509445540602e-8
+                                                        - -2.65509445540602e-08
                                                         - 0.9999999999999997
                                                         - 0
-                                                        - -0.0000481874121760484
+                                                        - -4.81874121760484e-05
                                                         - 0.0382607653737068
                                                         - 1.32735064259371e-11
                                                         - 1
@@ -574,7 +896,7 @@ components:
                                                     - -0.21462552655518768
                                                     - 0.9766964123034472
                                                     - 0
-                                                    - 0.0000530422985320911
+                                                    - 5.30422985320911e-05
                                                     - 0.0533351078629494
                                                     - -4.42813077872195e-11
                                                     - 1
@@ -592,7 +914,7 @@ components:
                                                 - 0.09542268171774548
                                                 - 0.9954368448172148
                                                 - 0
-                                                - -0.00000485463215227355
+                                                - -4.85463215227355e-06
                                                 - 0.0529406517744064
                                                 - -1.93961114530738e-11
                                                 - 1
@@ -600,7 +922,7 @@ components:
                                           matrix:
                                             - 0.9954805855672567
                                             - 0.09496527908803984
-                                            - -1.2941486187811185e-9
+                                            - -1.2941486187811185e-09
                                             - 0
                                             - -0.09491761488802208
                                             - 0.9949809424587464
@@ -626,13 +948,13 @@ components:
                                                         - 0
                                                         - -1.3183898420931964e-16
                                                         - 1
-                                                        - 7.35401695095562e-9
+                                                        - 7.35401695095562e-09
                                                         - 0
                                                         - -9.540977805918758e-18
-                                                        - -7.35401695095562e-9
+                                                        - -7.35401695095562e-09
                                                         - 1
                                                         - 0
-                                                        - -0.00000928990539250663
+                                                        - -9.28990539250663e-06
                                                         - 0.0354266837239265
                                                         - -8.73870906192842e-11
                                                         - 1
@@ -650,7 +972,7 @@ components:
                                                     - -0.11550822884517592
                                                     - 0.9933065232230578
                                                     - 0
-                                                    - 0.000026738814995042
+                                                    - 2.6738814995042e-05
                                                     - 0.0406473055481911
                                                     - 3.26852503396147e-11
                                                     - 1
@@ -668,7 +990,7 @@ components:
                                                 - 0.12302991668260783
                                                 - 0.9924029619489811
                                                 - 0
-                                                - -0.0000174491233337903
+                                                - -1.74491233337903e-05
                                                 - 0.0429742187261581
                                                 - 1.72643413454132e-10
                                                 - 1
@@ -712,7 +1034,7 @@ components:
                                   matrix:
                                     - 0.9999156874569506
                                     - 0.012985298792628731
-                                    - 9.940629097215242e-9
+                                    - 9.940629097215242e-09
                                     - 0
                                     - -0.012946359591008453
                                     - 0.9969172850633722
@@ -724,7 +1046,7 @@ components:
                                     - 0
                                     - 3.90602758471026e-11
                                     - 0.292298674583435
-                                    - 1.210723632461e-9
+                                    - 1.210723632461e-09
                                     - 1
                                   name: mixamorigLeftForeArm
                               matrix:
@@ -742,7 +1064,7 @@ components:
                                 - 0
                                 - -2.22392229631829e-10
                                 - 0.142236158251762
-                                - -1.943339933419e-9
+                                - -1.943339933419e-09
                                 - 1
                               name: mixamorigLeftArm
                           matrix:
@@ -778,15 +1100,15 @@ components:
                                                         - 0
                                                         - -5.55111517782929e-17
                                                         - 0.9999999999999998
-                                                        - -1.970901664094526e-8
+                                                        - -1.970901664094526e-08
                                                         - 0
                                                         - 5.55111506842227e-17
-                                                        - 1.970901664094526e-8
+                                                        - 1.970901664094526e-08
                                                         - 0.9999999999999998
                                                         - 0
                                                         - -0.000521870038937777
                                                         - 0.0510049909353256
-                                                        - 1.61728730407873e-9
+                                                        - 1.61728730407873e-09
                                                         - 1
                                                       name: mixamorigRightHandThumb4
                                                   matrix:
@@ -822,13 +1144,13 @@ components:
                                                 - 0
                                                 - 0.00397901562973857
                                                 - 0.037017684429884
-                                                - -1.37807742994767e-9
+                                                - -1.37807742994767e-09
                                                 - 1
                                               name: mixamorigRightHandThumb2
                                           matrix:
                                             - 0.792178845540778
                                             - -0.6102890233919052
-                                            - 1.1700801827441154e-8
+                                            - 1.1700801827441154e-08
                                             - 0
                                             - 0.5482050132259066
                                             - 0.7115913947224659
@@ -854,13 +1176,13 @@ components:
                                                         - 0
                                                         - -8.456776733993061e-18
                                                         - 0.9999999999999998
-                                                        - -2.2156413592711e-8
+                                                        - -2.2156413592711e-08
                                                         - 0
                                                         - -1.9081958329430803e-17
-                                                        - 2.2156413592711e-8
+                                                        - 2.2156413592711e-08
                                                         - 0.9999999999999998
                                                         - 0
-                                                        - -0.00000125803796890978
+                                                        - -1.25803796890978e-06
                                                         - 0.0398715175688267
                                                         - -1.65445324107338e-10
                                                         - 1
@@ -878,7 +1200,7 @@ components:
                                                     - -0.016506236768842875
                                                     - 0.9998637628005609
                                                     - 0
-                                                    - -0.00000216119019569305
+                                                    - -2.16119019569305e-06
                                                     - 0.0449690110981464
                                                     - 4.33715259887113e-12
                                                     - 1
@@ -896,7 +1218,7 @@ components:
                                                 - 0.01643214443877161
                                                 - 0.9998649832048103
                                                 - 0
-                                                - 0.0000034192178191006
+                                                - 3.4192178191006e-06
                                                 - 0.0489896051585674
                                                 - 1.22707885519269e-11
                                                 - 1
@@ -930,13 +1252,13 @@ components:
                                                         - 0
                                                         - 1.3877787790759155e-17
                                                         - 1
-                                                        - 9.83171410950944e-9
+                                                        - 9.83171410950944e-09
                                                         - 0
                                                         - -3.4694470201748415e-18
-                                                        - -9.83171410950944e-9
+                                                        - -9.83171410950944e-09
                                                         - 1
                                                         - 0
-                                                        - 0.0000147053906403016
+                                                        - 1.47053906403016e-05
                                                         - 0.03703523427248
                                                         - 3.00836411337713e-10
                                                         - 1
@@ -954,7 +1276,7 @@ components:
                                                     - -0.1687745805123786
                                                     - 0.9856546762098009
                                                     - 0
-                                                    - -0.000010069351446873
+                                                    - -1.0069351446873e-05
                                                     - 0.0526467561721802
                                                     - -1.59898261298252e-10
                                                     - 1
@@ -972,7 +1294,7 @@ components:
                                                 - 0.027177061444206577
                                                 - 0.999630635463699
                                                 - 0
-                                                - -0.00000463557580587803
+                                                - -4.63557580587803e-06
                                                 - 0.0536975860595703
                                                 - 2.29618993090319e-12
                                                 - 1
@@ -1006,13 +1328,13 @@ components:
                                                         - 0
                                                         - 1.3183898414445915e-16
                                                         - 1
-                                                        - 1.204630617479552e-9
+                                                        - 1.204630617479552e-09
                                                         - 0
                                                         - -4.943961914474764e-17
-                                                        - -1.204630617479552e-9
+                                                        - -1.204630617479552e-09
                                                         - 1
                                                         - 0
-                                                        - 0.00000570806423638714
+                                                        - 5.70806423638714e-06
                                                         - 0.0353982262313366
                                                         - -6.08176217720136e-11
                                                         - 1
@@ -1030,7 +1352,7 @@ components:
                                                     - -0.10689072515099297
                                                     - 0.9942707746633039
                                                     - 0
-                                                    - -0.0000145988406075048
+                                                    - -1.45988406075048e-05
                                                     - 0.0398492440581322
                                                     - -2.61255184152986e-11
                                                     - 1
@@ -1048,7 +1370,7 @@ components:
                                                 - 0.09877444025184717
                                                 - 0.9951098483803501
                                                 - 0
-                                                - 0.00000889077637111768
+                                                - 8.89077637111768e-06
                                                 - 0.043598435819149
                                                 - -1.15926178378967e-10
                                                 - 1
@@ -1092,7 +1414,7 @@ components:
                                   matrix:
                                     - 0.9994386862129774
                                     - -0.03350093272863077
-                                    - 8.79772987490493e-9
+                                    - 8.79772987490493e-09
                                     - 0
                                     - 0.03340626110042196
                                     - 0.996614312670363
@@ -1110,7 +1432,7 @@ components:
                               matrix:
                                 - 0.9999744396203862
                                 - 0.00714983264563801
-                                - 1.1437700603474099e-8
+                                - 1.1437700603474099e-08
                                 - 0
                                 - -0.00702763316560173
                                 - 0.9828839342407055
@@ -1122,7 +1444,7 @@ components:
                                 - 0
                                 - 2.22504376035104e-10
                                 - 0.142236158251762
-                                - -1.94332616665349e-9
+                                - -1.94332616665349e-09
                                 - 1
                               name: mixamorigRightArm
                           matrix:
@@ -1168,10 +1490,10 @@ components:
                     - 0
                     - 0
                     - 0.9999999999999929
-                    - -1.193237864072216e-7
+                    - -1.193237864072216e-07
                     - 0
                     - 0
-                    - 1.193237864072216e-7
+                    - 1.193237864072216e-07
                     - 0.9999999999999929
                     - 0
                     - 0
@@ -1209,10 +1531,10 @@ components:
                                 - 0
                                 - 4.163336375667038e-17
                                 - 1
-                                - -1.15111475906815e-9
+                                - -1.15111475906815e-09
                                 - 0
                                 - -5.789639600832975e-16
-                                - 1.15111475906815e-9
+                                - 1.15111475906815e-09
                                 - 1
                                 - 0
                                 - 1.10519414800447e-11
@@ -1235,12 +1557,12 @@ components:
                             - 0
                             - -8.05169245079312e-13
                             - 0.202908679842949
-                            - -5.50102807750363e-9
+                            - -5.50102807750363e-09
                             - 1
                           name: mixamorigLeftToeBase
                       matrix:
                         - 0.9999999168153643
-                        - -1.7307722138348944e-9
+                        - -1.7307722138348944e-09
                         - 0.0004078838780730805
                         - 0
                         - -0.00035540864926594687
@@ -1317,7 +1639,7 @@ components:
                               name: mixamorigRightToe_End
                           matrix:
                             - 0.9894166466222347
-                            - -8.927762973343079e-9
+                            - -8.927762973343079e-09
                             - 0.14510237424737388
                             - 0
                             - -0.07548679130862589
@@ -1330,7 +1652,7 @@ components:
                             - 0
                             - -3.82746265237266e-11
                             - 0.203901320695877
-                            - 1.59822832745959e-9
+                            - 1.59822832745959e-09
                             - 1
                           name: mixamorigRightToeBase
                       matrix:
@@ -1348,7 +1670,7 @@ components:
                         - 0
                         - -6.47327913494422e-10
                         - 0.425284564495087
-                        - -2.86193824194925e-9
+                        - -2.86193824194925e-09
                         - 1
                       name: mixamorigRightFoot
                   matrix:
@@ -1412,16 +1734,34 @@ components:
           - 0
           - 0
           - 99.9999999999999
-          - 0.0000043711388286738005
+          - 4.3711388286738005e-06
           - 0
           - 0
-          - -0.0000043711388286738005
+          - -4.3711388286738005e-06
           - 99.9999999999999
           - 0
           - 0
           - 0
           - 0
           - 1
+    UserRole:
+      type: string
+      enum:
+        - Unknown
+        - Animator
+        - 3D/Concept Artist
+        - Tech. Artist
+        - Game Developer
+        - Game Designer
+        - VFX Artist
+        - Executive/Producer
+        - Hobbyist
+        - Scientist/Researcher
+        - Analyst
+        - Investor
+        - Other
+      title: UserRole
+      description: User role enumeration.
     ValidationError:
       properties:
         loc:
@@ -1446,5 +1786,6 @@ components:
   securitySchemes:
     APIKeyHeader:
       type: apiKey
+      description: The API Key for the Text2Motion API. You can find it in your Text2Motion developer portal, under Apps
       in: header
       name: x-apikey
